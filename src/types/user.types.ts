@@ -4,4 +4,3 @@ export interface User {
     password: string;
 }
 
-//file to add user property to the global space
