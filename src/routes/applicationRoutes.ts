@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { addApplication } from "../controllers/applicationControllers";
+import { addApplication, getApplications } from "../controllers/applicationControllers";
 
 const router = Router();
 
 router.post("/applications", addApplication);
-router.get('./applications', addApplication);
+router.get('/applications', getApplications);
 
 export default router;
