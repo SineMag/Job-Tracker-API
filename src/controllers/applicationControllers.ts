@@ -3,8 +3,26 @@ import * as applicationService from "../service/applicationService";
 import { query } from "../config/database";
 import { parse } from "path";
 
+import { ApplicationStatus } from "../types/application.types";
+
 export const addApplication = async (req: Request, res: Response) => {
   console.log("Request Body:", req.body);
+  const { companyName, jobTitle, status } = req.body;
+  if (!companyName || !jobTitle || !status) {
+    return res
+      .status(400)
+      .json({ message: "companyName, jobTitle and status are required" });
+  }
+  const validStatuses: ApplicationStatus[] = [
+    "Applied",
+    "Pending",
+    "Rejected",
+    "Offer",
+    
+  ];
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ message: "Invalid status" });
+  }
   try {
     const NewApplication = await applicationService.createApplication(req.body); //application data which has been a type of new applications
     res.status(201).json(NewApplication);
@@ -18,7 +36,10 @@ export const addApplication = async (req: Request, res: Response) => {
 export const getApplications = async (req: Request, res: Response) => {
   try {
     const applications = await applicationService.findApplications();
-    res.status(200).json(applications);
+    const response = applications
+      .map((app) => JSON.stringify(app))
+      .join(",");
+    res.status(200).send(response);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving applications" });
   }

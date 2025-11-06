@@ -6,6 +6,7 @@ export interface Application {
   jobTitle: string;
   status: ApplicationStatus;
   appliedAt: Date;
+  user_id: number;
 }
 export type NewApplication = Omit<Application, "id" | "appliedAt">;
 

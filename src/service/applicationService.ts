@@ -5,12 +5,17 @@ import { Application, NewApplication } from "../types/application.types";
 export const createApplication = async (
   appData: NewApplication
 ): Promise<Application> => {
-  const { companyName, jobTitle, status } = appData;
-  const { rows } = await query(
-    `INSERT INTO applications (companyName, jobTitle, status) VALUES ($1, $2, $3) RETURNING *`,
-    [companyName, jobTitle, status]
-  );
-  return rows[0];
+  try {
+    const { companyName, jobTitle, status, user_id } = appData;
+    const { rows } = await query(
+      `INSERT INTO applications (companyName, jobTitle, status, user_id) VALUES ($1, $2, $3, $4) RETURNING *`,
+      [companyName, jobTitle, status, user_id]
+    );
+    return rows[0];
+  } catch (error) {
+    console.error("Error in createApplication:", error);
+    throw error;
+  }
 };
 
 export const findApplications = async (): Promise<Application[]> => {

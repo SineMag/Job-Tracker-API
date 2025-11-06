@@ -33,13 +33,13 @@ export const login = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(409).json({ message: "Invalid email" });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
     }
     const payload = { userId: user.id, email: user.email };
     const token = jwt.sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
+      expiresIn: "10h",
     });
 
     res.status(200).json({ message: "Login successful", token });

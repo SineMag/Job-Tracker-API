@@ -7,7 +7,11 @@ import {
   deleteApplicationById,
 } from "../controllers/applicationControllers";
 
+import { protect} from "../middleware/authMiddleware";
+
 const router = Router();
+
+router.use(protect);
 
 router.post("/applications", addApplication);
 router.get("/applications", getApplications);
