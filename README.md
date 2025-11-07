@@ -1,39 +1,114 @@
+## Collaboration App
+
+### Project Structure
+
+``` bash
 Collaboration App
+├── .gitignore
+├── package-lock.json
+├── package.json
+├── README.md
+├── tsconfig.json
+└── src
+    ├── config
+    │   └── database.ts
+    ├── controllers
+    │   ├── analyticsController.ts
+    │   ├── applicationControllers.ts
+    │   ├── authController.ts
+    │   ├── commentControlller.ts
+    │   ├── notificationController.ts
+    │   ├── projectController.ts
+    │   ├── reviewController.ts
+    │   ├── statsController.ts
+    │   ├── submissionController.ts
+    │   └── userController.ts
+    ├── db
+    │   ├── init-db.ts
+    │   └── schema.sql
+    ├── middleware
+    │   ├── authMiddleware.ts
+    │   ├── checkAuth.ts
+    │   ├── checkRoutes.ts
+    │   ├── errorHandler.ts
+    │   ├── validateRequest.ts
+    │   └── validators.ts
+    ├── models
+    │   ├── commentModels.ts
+    │   ├── projectModels.ts
+    │   ├── reviewModels.ts
+    │   ├── submissionModels.ts
+    │   └── userModel.ts
+    ├── public
+    │   ├── css
+    │   │   └── styles.css
+    │   ├── images
+    │   │   ├── android-chrome-192x192.png
+    │   │   └── favicon.ico
+    │   └── js
+    │       └── script.js
+    ├── routes
+    │   ├── applicationRoutes.ts
+    │   ├── authRoutes.ts
+    │   ├── commentRoutes.ts
+    │   ├── projectsRoutes.ts
+    │   ├── submissionRoutes.ts
+    │   └── userRoutes.ts
+    ├── service
+    │   ├── applicationService.ts
+    │   ├── commentService.ts
+    │   ├── notificationService.ts
+    │   ├── projectService.ts
+    │   ├── reviewService.ts
+    │   ├── statsService.ts
+    │   ├── submissionService.ts
+    │   └── userServices.ts
+    ├── sockets
+    │   └── notificationSocket.ts
+    ├── types
+    │   ├── application.types.ts
+    │   ├── express.d.ts
+    │   └── user.types.ts
+    ├── views
+    │   └── index.html
+    └── server.ts
+```
+
 ---
----
-Bellow are the steps to test the endpoints (Postman is Recommanded)
+Bellow are the steps to test the endpoints (Postman is Recommended)
 ---
 ---
 
- 1. Authentication & User Management
+### 1. Authentication & User Management
 
-   * Register a new user:
+   * **Register** a new user:
        * POST http://localhost:3000/api/auth/register
        * Headers: Content-Type: application/json
        * Body (raw, JSON):
    1         {
-   2             "username": "testuser",
-   3             "email": "test@example.com",
-   4             "password": "password123"
+   2             "username": "user",
+   3             "email": "user@mail.com",
+   4             "password": "abc123"
    5         }
-       * Expected: 201 Created (success message, userID)
+       * Expected: 201 Created ("User registered successfully", userID) <!--congratulationsssss -->
 
-   * Login a user and get JWT token:
+   * **Login** a user and get JWT token:
        * POST http://localhost:3000/api/auth/login
        * Headers: Content-Type: application/json
        * Body (raw, JSON):
    1         {
-   2             "email": "test@example.com",
-   3             "password": "password123"
+   2             "email": "some@email.com",
+   3             "password": "abc123"
    4         }
-       * Expected: 200 OK (success message, token). Save this token for authenticated requests.
+       * Expected: 200 OK ("Login successful", token). Save this token for authenticated requests.
 
-   * Get user profile (authenticated):
+<!-- Please don't forget your token as you will need it in the next steps!! -->
+   * **Get** user profile (authenticated):
        * GET http://localhost:3000/api/users/:id (Replace :id with userID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 200 OK (user profile data)
 
-   * Update user profile (authenticated):
+   * **Update** user profile (authenticated):
        * PUT http://localhost:3000/api/users/:id (Replace :id with user ID)
        * Headers: Content-Type: application/json, Authorization: Bearer YOUR_JWT_TOKEN
        * Body (raw, JSON):
@@ -44,16 +119,16 @@ Bellow are the steps to test the endpoints (Postman is Recommanded)
    4         }
        * Expected: 200 OK (updated user profile data)
 
-   * Delete user (authenticated):
+   * **Delete** user (authenticated):
        * DELETE http://localhost:3000/api/users/:id (Replace :id with user ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
-       * Expected: 204 No Content
+        * Expected: 204 No Content <!--Oops, gone with the wind -->
 
   ---
 
-  2. Projects
+###  2. Projects
 
-   * Create a new project (authenticated):
+   * **Create** a new project (authenticated):
        * POST http://localhost:3000/api/projects
        * Headers: Content-Type: application/json, Authorization: Bearer YOUR_JWT_TOKEN
        * Body (raw, JSON):
@@ -64,12 +139,12 @@ Bellow are the steps to test the endpoints (Postman is Recommanded)
    4         }
        * Expected: 201 Created (new project data). Save the `id`.
 
-   * List all projects (authenticated):
+   * **List all** projects (authenticated):
        * GET http://localhost:3000/api/projects
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 200 OK (array of project data)
 
-   * Assign user to project (authenticated):
+   * **Assign** user to project (authenticated):
        * POST http://localhost:3000/api/projects/:id/members (Replace :id with project ID)
        * Headers: Content-Type: application/json, Authorization: Bearer YOUR_JWT_TOKEN
        * Body (raw, JSON):
@@ -78,21 +153,21 @@ Bellow are the steps to test the endpoints (Postman is Recommanded)
    3         }
        * Expected: 201 Created (assignment data)
 
-   * Remove user from project (authenticated):
+   * **Remove** user from project (authenticated):
        * DELETE http://localhost:3000/api/projects/:id/members/:userId (Replace :id with project ID, :userId with user ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 204 No Content
 
-   * Get project statistics (authenticated):
+   * **Get project statistics** (authenticated):
        * GET http://localhost:3000/api/projects/:id/stats (Replace :id with project ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 200 OK (project statistics)
 
   ---
 
-  3. Submissions
+###  3. Submissions
 
-   * Create a new submission (authenticated):
+   * **Create** a new submission (authenticated):
        * POST http://localhost:3000/api/submissions
        * Headers: Content-Type: application/json, Authorization: Bearer YOUR_JWT_TOKEN
        * Body (raw, JSON):
@@ -104,17 +179,17 @@ Bellow are the steps to test the endpoints (Postman is Recommanded)
    5         }
        * Expected: 201 Created (new submission data). Save the `id`.
 
-   * List submissions by project (authenticated):
+   * **List** submissions by project (authenticated):
        * GET http://localhost:3000/api/projects/:id/submissions (Replace :id with project ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 200 OK (array of submission data)
 
-   * View a single submission (authenticated):
+   * **View** a single submission (authenticated):
        * GET http://localhost:3000/api/submissions/:id (Replace :id with submission ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 200 OK (submission data)
 
-   * Update submission status (authenticated):
+   * **Update** submission status (authenticated):
        * PUT http://localhost:3000/api/submissions/:id/status (Replace :id with submission ID)
        * Headers: Content-Type: application/json, Authorization: Bearer YOUR_JWT_TOKEN
        * Body (raw, JSON):
@@ -124,16 +199,16 @@ Bellow are the steps to test the endpoints (Postman is Recommanded)
    3         }
        * Expected: 200 OK (updated submission data)
 
-   * Delete a submission (authenticated):
+   * **Delete** a submission (authenticated):
        * DELETE http://localhost:3000/api/submissions/:id (Replace :id with submission ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 204 No Content
 
   ---
 
-  4. Comments
+###  4. Comments
 
-   * Add a comment to a submission (authenticated):
+   * **Add** a comment to a submission (authenticated):
        * POST http://localhost:3000/api/submissions/:id/comments (Replace :id with submission ID)
        * Headers: Content-Type: application/json, Authorization: Bearer YOUR_JWT_TOKEN
        * Body (raw, JSON):
@@ -143,12 +218,12 @@ Bellow are the steps to test the endpoints (Postman is Recommanded)
    3         }
        * Expected: 201 Created (new comment data). Save the `id`.
 
-   * List comments for a submission (authenticated):
+   * **List** comments for a submission (authenticated):
        * GET http://localhost:3000/api/submissions/:id/comments (Replace :id with submission ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 200 OK (array of comment data)
 
-   * Update a comment (authenticated):
+   * **Update** a comment (authenticated):
        * PUT http://localhost:3000/api/comments/:id (Replace :id with comment ID)
        * Headers: Content-Type: application/json, Authorization: Bearer YOUR_JWT_TOKEN
        * Body (raw, JSON):
@@ -157,35 +232,35 @@ Bellow are the steps to test the endpoints (Postman is Recommanded)
    3         }
        * Expected: 200 OK (updated comment data)
 
-   * Delete a comment (authenticated):
+   * **Delete** a comment (authenticated):
        * DELETE http://localhost:3000/api/comments/:id (Replace :id with comment ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 204 No Content
 
   ---
 
-  5. Reviews
+###  5. Reviews
 
-   * Approve a submission (authenticated):
+   * **Approve a submission** (authenticated):
        * POST http://localhost:3000/api/submissions/:id/approve (Replace :id with submission ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 201 Created (review data)
 
-   * Request changes for a submission (authenticated):
+   * **Request changes** for a submission (authenticated):
        * POST http://localhost:3000/api/submissions/:id/request-changes (Replace :id with submission ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 201 Created (review data)
 
-   * Get review history for a submission (authenticated):
+   * **Get review history** for a submission (authenticated):
        * GET http://localhost:3000/api/submissions/:id/reviews (Replace :id with submission ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 200 OK (array of review history data)
 
   ---
 
-  6. Notifications
+###  6. Notifications
 
-   * Get user activity feed (authenticated):
+   * **Get user activity feed** (authenticated):
        * GET http://localhost:3000/api/users/:id/notifications (Replace :id with user ID)
        * Headers: Authorization: Bearer YOUR_JWT_TOKEN
        * Expected: 200 OK (user activity data)
