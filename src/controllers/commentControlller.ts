@@ -6,7 +6,10 @@ export const createComment = async (req: Request, res: Response) => {
   const { comment } = req.body;
   const user_id = req.user!.id;
   try {
+import { broadcast } from "../sockets/notificationSocket";
+
     const newComment = await commentService.createComment(comment, parseInt(id), user_id);
+    broadcast(JSON.stringify({ type: "NEW_COMMENT", data: newComment }));
     res.status(201).json(newComment);
   } catch (error) {
     res.status(500).json({ message: "Error creating comment" });

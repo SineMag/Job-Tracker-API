@@ -41,7 +41,14 @@ const startServer = async () => {
   // Error handler
   app.use(errorHandler);
 
-  app.listen(PORT, () => {
+  import { createServer } from "http";
+import { initWebSocket } from "./sockets/notificationSocket";
+
+const server = createServer(app);
+
+initWebSocket(server);
+
+server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
 };

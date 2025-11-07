@@ -5,7 +5,9 @@ import { protect } from "../middleware/authMiddleware";
 
 const router = Router();
 
-router.post("/", protect, createProject);
+import { validateProjectCreation } from "../middleware/validators";
+
+router.post("/", protect, validateProjectCreation, createProject);
 router.get("/", protect, getProjects);
 router.post("/:id/members", protect, assignUserToProject);
 router.delete("/:id/members/:userId", protect, removeUserFromProject);
