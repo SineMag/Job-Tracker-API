@@ -4,16 +4,16 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export const register = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
+  const { username, email, password } = req.body;
+  if (!username || !email || !password) {
+    return res.status(400).json({ message: "Username, email and password are required" });
   }
   try {
     const existingUser = await userService.findUserByEmail(email);
     if (existingUser) {
       return res.status(409).json({ message: "Email is already in use" });
     }
-    const user = await userService.createUser(email, password);
+    const user = await userService.createUser(username, email, password);
     res
       .status(201)
       .json({ message: "User registered successfully", userID: user.id });
@@ -29,11 +29,11 @@ export const login = async (req: Request, res: Response) => {
   }
 
   try {
-    const user = await userService.findUserByEmail(email);
-    if (!user) {
-      return res.status(409).json({ message: "Invalid email" });
+    const user = await userService.findUserByEmailWithPassword(email);
+    if (!user || !user.password) {
+      return res.status(409).json({ message: "Invalid email or password" });
     }
-    const isMatch = await bcrypt.compare(password, user.password_hash);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
     }

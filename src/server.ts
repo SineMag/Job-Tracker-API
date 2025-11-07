@@ -1,29 +1,13 @@
-// import express, {Request, Response, application } from "express";
-
-// require('dotenv').config();
-
-// const express = require('express')
-// const app = express()
-
-// const PORT = process.env.PORT || 3000
-
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'views', 'index.html'));
-// })
-
-// app.listen(PORT, () => {
-//   console.log(`Example app listening on port ${PORT}`)
-// })
-
-// startServer();
-
-import express, { application } from "express";
+import express from "express";
 import path from "path";
 import dotenv from "dotenv";
-import { log } from "console";
 import { testDBConnection } from "./config/database";
-import applicationRoutes from "./routes/applicationRoutes";
+
 import authRoutes from "./routes/authRoutes";
+import userRoutes from "./routes/userRoutes";
+import projectRoutes from "./routes/projectsRoutes";
+import submissionRoutes from "./routes/submissionRoutes";
+import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
 
@@ -35,15 +19,26 @@ const startServer = async () => {
   app.use(express.json());
 
   //serve static files
-  app.use(express.static(path.join(__dirname, "public"))); //the public folder is the statis folder which contains all the static files like css, js , images etc
+  app.use(express.static(path.join(__dirname, "public")));
+
+
   app.use("/api/auth", authRoutes);
-  app.use("/api", applicationRoutes);
+  app.use("/api/users", userRoutes);
+  app.use("/api/projects", projectRoutes);
+  app.use("/api/submissions", submissionRoutes);
+
   app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "views", "index.html"));
   });
 
-  app.use("/api", applicationRoutes); // add request, response and next parameters and an error handling middleware. import Next:NextFunction from express..
-  // //res.status(404).json({message: 'Not Found,Internal Server Error', success: false});
+  // 404 handler
+  app.use((req, res, next) => {
+    res.status(404).json({ message: 'Not Found' });
+  });
+
+  // Error handler
+  app.use(errorHandler);
+
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
