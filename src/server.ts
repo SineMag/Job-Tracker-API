@@ -7,6 +7,7 @@ import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import projectRoutes from "./routes/projectsRoutes";
 import submissionRoutes from "./routes/submissionRoutes";
+import commentRoutes from "./routes/commentRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
@@ -26,6 +27,7 @@ const startServer = async () => {
   app.use("/api/users", userRoutes);
   app.use("/api/projects", projectRoutes);
   app.use("/api/submissions", submissionRoutes);
+  app.use("/api/comments", commentRoutes);
 
   app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "views", "index.html"));
