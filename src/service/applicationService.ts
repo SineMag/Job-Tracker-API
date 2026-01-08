@@ -1,4 +1,3 @@
-import { application } from "express";
 import { query } from "../config/database";
 import { Application, NewApplication } from "../types/application.types";
 
@@ -13,7 +12,6 @@ export const createApplication = async (
     );
     return rows[0];
   } catch (error) {
-    console.error("Error in createApplication:", error);
     throw error;
   }
 };
@@ -57,15 +55,3 @@ export const deleteApplication = async (
   );
   return rows[0] || null;
 };
-
-
-export const updateApplicationById = async (req: Request, res: Response) => {
-  try {
-    // const id = parseInt(req.params.id);
-    console.log(req);
-
-    // const updatedApplication = await applicationService.updateApplication(id, req.body);
-  } catch (error) {
-
-  }
-}

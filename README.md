@@ -1,4 +1,6 @@
-## Collaboration App
+## Job Tracker API
+
+A RESTful API for managing job applications, projects, submissions, and code reviews.
 
 ### Project Structure
 
@@ -266,5 +268,63 @@ Bellow are the steps to test the endpoints (Postman is Recommended)
        * Expected: 200 OK (user activity data)
 
   ---
+
+## Deployment on Render.com
+
+### Prerequisites
+- A Render.com account
+- A PostgreSQL database (can be created on Render)
+
+### Steps to Deploy
+
+1. **Push your code to GitHub**
+   - Make sure your code is in a GitHub repository
+
+2. **Create a PostgreSQL Database on Render**
+   - Go to Render Dashboard → New → PostgreSQL
+   - Note down the connection details (host, database, user, password, port)
+
+3. **Create a Web Service on Render**
+   - Go to Render Dashboard → New → Web Service
+   - Connect your GitHub repository
+   - Configure the service:
+     - **Build Command**: `npm install && npm run build`
+     - **Start Command**: `npm start`
+     - **Environment**: Node
+
+4. **Set Environment Variables in Render**
+   Add the following environment variables in your Render service settings:
+   ```
+   NODE_ENV=production
+   PORT=10000 (or leave empty - Render sets this automatically)
+   DB_USER=<your_postgres_user>
+   DB_HOST=<your_postgres_host>
+   DB_DATABASE=<your_database_name>
+   DB_PASSWORD=<your_postgres_password>
+   DB_PORT=5432
+   JWT_SECRET=<generate_a_strong_random_string>
+   ```
+
+5. **Deploy**
+   - Click "Create Web Service"
+   - Render will build and deploy your application
+   - Your API will be available at the provided Render URL
+
+### Environment Variables
+
+Create a `.env` file locally with the following variables:
+- `PORT` or `APP_PORT`: Server port (default: 3000)
+- `NODE_ENV`: Environment (production/development)
+- `DB_USER`: PostgreSQL username
+- `DB_HOST`: PostgreSQL host
+- `DB_DATABASE`: PostgreSQL database name
+- `DB_PASSWORD`: PostgreSQL password
+- `DB_PORT`: PostgreSQL port (default: 5432)
+- `JWT_SECRET`: Secret key for JWT tokens
+
+### Notes
+- The server automatically uses SSL for database connections in production
+- Make sure your database is accessible from Render's servers
+- Update your frontend API URLs to point to your Render deployment URL
 
 

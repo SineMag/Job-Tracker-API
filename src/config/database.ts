@@ -1,6 +1,5 @@
 import { Pool } from "pg";
 import dotenv from "dotenv";
-// import { parse } from "path";
 
 dotenv.config();
 
@@ -10,17 +9,18 @@ const pool = new Pool({
   database: process.env.DB_DATABASE,
   password: process.env.DB_PASSWORD,
   port: parseInt(process.env.DB_PORT || "5432"),
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
 });
 
 export const query = (text: string, params?: any[]) => pool.query(text, params);
 
 export const testDBConnection = async () => {
     try {
-        const client = await pool.connect(); // tempting to check out a client from the pool
-        console.log("Database connection successfully");
-        client.release() // release the client back to the pool
+        const client = await pool.connect();
+        console.log("Database connection successful");
+        client.release();
     } catch (error) {
         console.error("Unable to connect to the database: ", error);
-        process.exit(1); // exit the process with failure.terminates an appliaction with an error
+        process.exit(1);
     }
 }

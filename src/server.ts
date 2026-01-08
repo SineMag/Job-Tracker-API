@@ -3,7 +3,6 @@ import path from "path";
 import dotenv from "dotenv";
 import { testDBConnection } from "./config/database";
 import { createServer } from "http";
-// import { initWebSocket } from "./sockets/notificationSocket";
 
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
@@ -15,15 +14,14 @@ import { errorHandler } from "./middleware/errorHandler";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.APP_PORT || 3000;
+const PORT = process.env.PORT || process.env.APP_PORT || 3000;
 
 const startServer = async () => {
   await testDBConnection();
   app.use(express.json());
 
-  //serve static files
+  // Serve static files
   app.use(express.static(path.join(__dirname, "public")));
-
 
   app.use("/api/auth", authRoutes);
   app.use("/api/users", userRoutes);
@@ -45,10 +43,8 @@ const startServer = async () => {
 
   const server = createServer(app);
 
-  // initWebSocket(server);
-
-  server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  server.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server is running on port ${PORT}`);
   });
 };
 

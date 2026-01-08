@@ -19,12 +19,8 @@ export const protect = async (
     req.headers.authorization.startsWith("Bearer ")
   ) {
     try {
-      console.log(req.headers, "request headers");
-      console.log(req.headers.authorization, "token");
-
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-      console.log(decoded, "decoded token");
 
       const user: User | null = await findUserByEmail(decoded.email);
       req.user = user || undefined;
@@ -39,7 +35,6 @@ export const protect = async (
       return res.status(401).json({ message: "Unauthorized: Invalid token" });
     }
   } else {
-    res.status(401).json({ message: "Unauthorized: No token provided" });
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
-  return res.status(401).json({ message: "Unauthorized" });
 };

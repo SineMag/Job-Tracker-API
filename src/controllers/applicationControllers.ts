@@ -1,12 +1,8 @@
 import { Request, Response } from "express";
 import * as applicationService from "../service/applicationService";
-import { query } from "../config/database";
-import { parse } from "path";
-
 import { ApplicationStatus } from "../types/application.types";
 
 export const addApplication = async (req: Request, res: Response) => {
-  console.log("Request Body:", req.body);
   const { companyName, jobTitle, status } = req.body;
   if (!companyName || !jobTitle || !status) {
     return res
@@ -27,7 +23,6 @@ export const addApplication = async (req: Request, res: Response) => {
     const NewApplication = await applicationService.createApplication(req.body); //application data which has been a type of new applications
     res.status(201).json(NewApplication);
   } catch (error) {
-    console.error("Error in creating application:", error);
     res.status(500).json({ message: "Error in creating application" });
   }
 };
@@ -86,8 +81,6 @@ export const deleteApplicationById = async (req: Request, res: Response) => {
     }
     res.status(200).send();
   } catch (error) {
-    console.log(error);
-    
     res.status(500).json({ message: "Error deleting application" });
   }
 }
