@@ -21,7 +21,7 @@ const startServer = async () => {
   app.use(express.json());
 
   // Serve static files
-  app.use(express.static(path.join(__dirname, "public")));
+  app.use(express.static(path.join(__dirname, "..", "src", "public")));
 
   app.use("/api/auth", authRoutes);
   app.use("/api/users", userRoutes);
@@ -30,7 +30,7 @@ const startServer = async () => {
   app.use("/api/comments", commentRoutes);
 
   app.get("/", (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, "views", "index.html"));
+    res.sendFile(path.join(__dirname, "..", "src", "views", "index.html"));
   });
 
   // 404 handler
