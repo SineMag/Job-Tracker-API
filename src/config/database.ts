@@ -6,6 +6,11 @@ dotenv.config();
 
 const DB_PATH = path.join(__dirname, "../../db.json");
 
+interface QueryResult<T = any> {
+  rows: T[];
+  rowCount: number;
+}
+
 // Initialize db.json if it doesn't exist
 const initializeDB = () => {
   if (!fs.existsSync(DB_PATH)) {
@@ -23,13 +28,16 @@ const initializeDB = () => {
 };
 
 // Mock query function for JSON-based database
-export const query = async (sql: string, params?: any[]) => {
+export const query = async (
+  sql: string,
+  params?: any[]
+): Promise<QueryResult> => {
   initializeDB();
 
   // For now, return a mock response that services can work with
   // In a real scenario, this would parse SQL and interact with db.json
   return {
-    rows: [],
+    rows: [{}],
     rowCount: 0,
   };
 };
