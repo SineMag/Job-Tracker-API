@@ -1,5 +1,24 @@
 {
-  "users": [],
+  "users": [
+    {
+      "id": 1,
+      "username": "te222222st57575user",
+      "email": "ter5555200000tg@st.com",
+      "password": "$2b$10$QnRj/o7JBiIDmfnVuBUzBemT2txpV3xjSa3J38Y4zhzrv6gtGnrMS",
+      "role": "user",
+      "display_picture": null,
+      "created_at": "2026-01-09T12:13:49.075Z"
+    },
+    {
+      "id": 2,
+      "username": "user",
+      "email": "mail@st.com",
+      "password": "$2b$10$A4E.e0uU8gxGZ2X/P/mTzew1OZu9zV8JR1zsDzcQO1jPfQNlpv3Ne",
+      "role": "user",
+      "display_picture": null,
+      "created_at": "2026-01-09T12:15:05.364Z"
+    }
+  ],
   "projects": [],
   "applications": [],
   "submissions": [],

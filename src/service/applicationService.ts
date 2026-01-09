@@ -16,11 +16,18 @@ export const createApplication = async (
   }
 };
 
-export const findApplications = async (): Promise<Application[]> => {
-  const { rows } = await query(
-    `SELECT * FROM applications ORDER BY appliedAt DESC`,
-    []
-  );
+export const findApplications = async (user_id?: number): Promise<Application[]> => {
+  let queryString = `SELECT * FROM applications`;
+  const queryParams: any[] = [];
+
+  if (user_id) {
+    queryString += ` WHERE user_id = $1`;
+    queryParams.push(user_id);
+  }
+
+  queryString += ` ORDER BY appliedAt DESC`;
+
+  const { rows } = await query(queryString, queryParams);
   return rows;
 };
 

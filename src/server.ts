@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction } from "express";
-import path from "path";
 import dotenv from "dotenv";
 import { createServer } from "http";
 import { testDBConnection } from "./config/database";
@@ -9,6 +8,7 @@ import userRoutes from "./routes/userRoutes";
 import projectRoutes from "./routes/projectsRoutes";
 import submissionRoutes from "./routes/submissionRoutes";
 import commentRoutes from "./routes/commentRoutes";
+import applicationRoutes from "./routes/applicationRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
@@ -20,17 +20,15 @@ const startServer = async () => {
   await testDBConnection();
   app.use(express.json());
 
-  // Serve static files
-  app.use(express.static(path.join(__dirname, "..", "src", "public")));
-
   app.use("/api/auth", authRoutes);
   app.use("/api/users", userRoutes);
   app.use("/api/projects", projectRoutes);
   app.use("/api/submissions", submissionRoutes);
   app.use("/api/comments", commentRoutes);
+  app.use("/api/applications", applicationRoutes);
 
   app.get("/", (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, "..", "src", "views", "index.html"));
+    res.json({ message: "Welcome to the Job Tracker API. Use the /api routes to access the data" });
   });
 
   // 404 handler

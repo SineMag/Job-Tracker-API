@@ -13,10 +13,10 @@ const router = Router();
 
 router.use(protect);
 
-router.post("/applications", addApplication);
-router.get("/applications", getApplications);
-router.get("/applications/:id", getApplicationById);
-router.put("/applications/:id", updateApplicationById);
-router.delete("/applications/:id", deleteApplicationById);
+router.post("/", addApplication);
+router.get("/", getApplications);
+router.get("/:id", getApplicationById);
+router.put("/:id", updateApplicationById);
+router.delete("/:id", deleteApplicationById);
 
 export default router;

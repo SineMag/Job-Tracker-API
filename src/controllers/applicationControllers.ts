@@ -30,7 +30,8 @@ export const addApplication = async (req: Request, res: Response) => {
 // GET all applications
 export const getApplications = async (req: Request, res: Response) => {
   try {
-    const applications = await applicationService.findApplications();
+    const user_id = req.query.user_id ? parseInt(req.query.user_id as string) : undefined;
+    const applications = await applicationService.findApplications(user_id);
     const response = applications
       .map((app) => JSON.stringify(app))
       .join(",");

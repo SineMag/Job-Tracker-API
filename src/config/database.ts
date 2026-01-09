@@ -34,10 +34,70 @@ export const query = async (
 ): Promise<QueryResult> => {
   initializeDB();
 
-  // For now, return a mock response that services can work with
-  // In a real scenario, this would parse SQL and interact with db.json
+  const dbData = JSON.parse(fs.readFileSync(DB_PATH, "utf-8"));
+
+  // Simplified SQL parsing
+  const isSelectUserByEmail = sql.match(/SELECT .* FROM users WHERE email = \$1/i);
+  const isSelectUserById = sql.match(/SELECT .* FROM users WHERE id = \$1/i);
+  const isInsertUser = sql.match(/INSERT INTO users/i);
+
+  if (isSelectUserByEmail && params) {
+    const email = params[0];
+    const user = dbData.users.find((u: any) => u.email === email);
+    if (user) {
+      return {
+        rows: [user],
+        rowCount: 1,
+      };
+    }
+    return {
+      rows: [],
+      rowCount: 0,
+    };
+  }
+
+  if (isSelectUserById && params) {
+    const id = params[0];
+    const user = dbData.users.find((u: any) => u.id === id);
+    if (user) {
+      // Return the user without the password
+      const { password, ...userResponse } = user;
+      return {
+        rows: [userResponse],
+        rowCount: 1,
+      };
+    }
+    return {
+      rows: [],
+      rowCount: 0,
+    };
+  }
+
+  if (isInsertUser && params) {
+    const [username, email, password_hash] = params;
+    const newUser = {
+      id: dbData.users.length > 0 ? Math.max(...dbData.users.map((u: any) => u.id)) + 1 : 1,
+      username,
+      email,
+      password: password_hash,
+      role: 'user',
+      display_picture: null,
+      created_at: new Date().toISOString(),
+    };
+    dbData.users.push(newUser);
+    fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2));
+    
+    // Return the newly created user without the password
+    const { password, ...userResponse } = newUser;
+    return {
+      rows: [userResponse],
+      rowCount: 1,
+    };
+  }
+
+  // Fallback for other queries to avoid breaking other parts of the app
   return {
-    rows: [{}],
+    rows: [],
     rowCount: 0,
   };
 };
