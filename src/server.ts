@@ -1,7 +1,8 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import path from "path";
 import dotenv from "dotenv";
 import { createServer } from "http";
+import { testDBConnection } from "./config/database";
 
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
@@ -13,9 +14,10 @@ import { errorHandler } from "./middleware/errorHandler";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || process.env.APP_PORT || 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 const startServer = async () => {
+  await testDBConnection();
   app.use(express.json());
 
   // Serve static files
@@ -27,12 +29,12 @@ const startServer = async () => {
   app.use("/api/submissions", submissionRoutes);
   app.use("/api/comments", commentRoutes);
 
-  app.get("/", (req, res) => {
+  app.get("/", (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, "views", "index.html"));
   });
 
   // 404 handler
-  app.use((req, res, next) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     res.status(404).json({ message: "Not Found" });
   });
 

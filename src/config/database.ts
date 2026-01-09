@@ -1,26 +1,33 @@
-import { Pool } from "pg";
 import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
 
 dotenv.config();
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: parseInt(process.env.DB_PORT || "5432"),
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
-});
+const DB_PATH = path.join(__dirname, "../../db.json");
 
-export const query = (text: string, params?: any[]) => pool.query(text, params);
+// Initialize db.json if it doesn't exist
+const initializeDB = () => {
+  if (!fs.existsSync(DB_PATH)) {
+    const initialData = {
+      users: [],
+      projects: [],
+      applications: [],
+      submissions: [],
+      comments: [],
+      reviews: [],
+      notifications: []
+    };
+    fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2));
+  }
+};
 
 export const testDBConnection = async () => {
-    try {
-        const client = await pool.connect();
-        console.log("Database connection successful");
-        client.release();
-    } catch (error) {
-        console.error("Unable to connect to the database: ", error);
-        process.exit(1);
-    }
-}
+  try {
+    initializeDB();
+    console.log("JSON Server database connection successful");
+  } catch (error) {
+    console.error("Unable to initialize database: ", error);
+    process.exit(1);
+  }
+};
