@@ -3,7 +3,7 @@ services:
     name: job-tracker-api
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --save-dev @types/express @types/jsonwebtoken && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
