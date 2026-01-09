@@ -165,13 +165,21 @@ export const query = async (
   const isDeleteApplication = sql.match(/DELETE FROM applications WHERE id = \$1 AND user_id = \$2/i);
   if (isDeleteApplication && params) {
     const [id, user_id] = params;
+    let deletedApplication: any = null;
     const initialLength = dbData.applications.length;
-    dbData.applications = dbData.applications.filter((app: any) => !(app.id === id && app.user_id === user_id));
+    dbData.applications = dbData.applications.filter((app: any) => {
+        if (app.id === id && app.user_id === user_id) {
+            deletedApplication = app;
+            return false; // remove this item
+        }
+        return true; // keep this item
+    });
+    
     if (dbData.applications.length < initialLength) {
       fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2));
       return {
-        rows: [],
-        rowCount: initialLength - dbData.applications.length,
+        rows: [deletedApplication], // Return the deleted application
+        rowCount: 1,
       };
     }
     return {

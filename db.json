@@ -31,11 +31,11 @@
     },
     {
       "id": 2,
-      "companyName": "ABC",
-      "jobTitle": "cash",
-      "status": "Applied",
+      "companyName": "Sne",
+      "jobTitle": "Magubane",
+      "status": "Offer",
       "user_id": 2,
-      "appliedAt": "2026-01-09T13:00:38.192Z"
+      "appliedAt": "2026-01-09T13:10:22.486Z"
     },
     {
       "id": 3,
@@ -44,6 +44,14 @@
       "status": "Offer",
       "user_id": 2,
       "appliedAt": "2026-01-09T13:16:55.682Z"
+    },
+    {
+      "id": 4,
+      "companyName": "company",
+      "jobTitle": "cash",
+      "status": "Offer",
+      "user_id": 2,
+      "appliedAt": "2026-01-09T13:36:44.778Z"
     }
   ],
   "submissions": [],
