@@ -42,23 +42,25 @@ export const findApplicationById = async (
 
 export const UpdateApplication = async (
   id: number,
+  user_id: number,
   appData: Application
 ): Promise<Application | null> => {
   const { status } = appData;
   const { rows } = await query(
-    `UPDATE applications SET status = $1 WHERE id = $2 RETURNING *`,
-    [status, id]
+    `UPDATE applications SET status = $1 WHERE id = $2 AND user_id = $3 RETURNING *`,
+    [status, id, user_id]
   );
   return rows[0] || null;
 };
 
 // delete application service
 export const deleteApplication = async (
-  id: number
+  id: number,
+  user_id: number
 ): Promise<Application | null> => {
   const { rows } = await query(
-    `DELETE FROM applications WHERE id = $1 RETURNING *`,
-    [id]
+    `DELETE FROM applications WHERE id = $1 AND user_id = $2 RETURNING *`,
+    [id, user_id]
   );
   return rows[0] || null;
 };

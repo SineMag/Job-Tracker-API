@@ -95,6 +95,91 @@ export const query = async (
     };
   }
 
+  const isInsertApplication = sql.match(/INSERT INTO applications/i);
+  if (isInsertApplication && params) {
+    const [companyName, jobTitle, status, user_id] = params;
+    const newApplication = {
+      id: dbData.applications.length > 0 ? Math.max(...dbData.applications.map((a: any) => a.id)) + 1 : 1,
+      companyName,
+      jobTitle,
+      status,
+      user_id,
+      appliedAt: new Date().toISOString(),
+    };
+    dbData.applications.push(newApplication);
+    fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2));
+    
+    return {
+      rows: [newApplication],
+      rowCount: 1,
+    };
+  }
+
+  const isSelectApplications = sql.match(/SELECT \* FROM applications(?: WHERE user_id = \$1)?(?: ORDER BY appliedAt DESC)?/i);
+  if (isSelectApplications) {
+      let applications = dbData.applications;
+      if (sql.includes("WHERE user_id = $1") && params && params.length > 0) {
+          const userId = params[0];
+          applications = applications.filter((app: any) => app.user_id === userId);
+      }
+      return {
+          rows: applications,
+          rowCount: applications.length,
+      };
+  }
+
+  const isSelectApplicationById = sql.match(/SELECT \* FROM applications WHERE id = \$1/i);
+  if (isSelectApplicationById && params) {
+    const id = params[0];
+    const application = dbData.applications.find((app: any) => app.id === id);
+    if (application) {
+      return {
+        rows: [application],
+        rowCount: 1,
+      };
+    }
+    return {
+      rows: [],
+      rowCount: 0,
+    };
+  }
+
+  const isUpdateApplication = sql.match(/UPDATE applications SET status = \$1 WHERE id = \$2 AND user_id = \$3/i);
+  if (isUpdateApplication && params) {
+    const [status, id, user_id] = params;
+    const index = dbData.applications.findIndex((app: any) => app.id === id && app.user_id === user_id);
+    if (index !== -1) {
+      dbData.applications[index].status = status;
+      fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2));
+      return {
+        rows: [dbData.applications[index]],
+        rowCount: 1,
+      };
+    }
+    return {
+      rows: [],
+      rowCount: 0,
+    };
+  }
+
+  const isDeleteApplication = sql.match(/DELETE FROM applications WHERE id = \$1 AND user_id = \$2/i);
+  if (isDeleteApplication && params) {
+    const [id, user_id] = params;
+    const initialLength = dbData.applications.length;
+    dbData.applications = dbData.applications.filter((app: any) => !(app.id === id && app.user_id === user_id));
+    if (dbData.applications.length < initialLength) {
+      fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2));
+      return {
+        rows: [],
+        rowCount: initialLength - dbData.applications.length,
+      };
+    }
+    return {
+      rows: [],
+      rowCount: 0,
+    };
+  }
+
   // Fallback for other queries to avoid breaking other parts of the app
   return {
     rows: [],

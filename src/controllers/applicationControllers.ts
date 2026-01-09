@@ -20,7 +20,8 @@ export const addApplication = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Invalid status" });
   }
   try {
-    const NewApplication = await applicationService.createApplication(req.body); //application data which has been a type of new applications
+    const applicationData = { ...req.body, user_id: req.user!.id };
+    const NewApplication = await applicationService.createApplication(applicationData); //application data which has been a type of new applications
     res.status(201).json(NewApplication);
   } catch (error) {
     res.status(500).json({ message: "Error in creating application" });
@@ -30,12 +31,9 @@ export const addApplication = async (req: Request, res: Response) => {
 // GET all applications
 export const getApplications = async (req: Request, res: Response) => {
   try {
-    const user_id = req.query.user_id ? parseInt(req.query.user_id as string) : undefined;
+    const user_id = req.user!.id;
     const applications = await applicationService.findApplications(user_id);
-    const response = applications
-      .map((app) => JSON.stringify(app))
-      .join(",");
-    res.status(200).send(response);
+    res.status(200).json(applications);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving applications" });
   }
@@ -57,8 +55,10 @@ export const getApplicationById = async (req: Request, res: Response) => {
 export const updateApplicationById = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
+    const user_id = req.user!.id;
     const updatedApplication = await applicationService.UpdateApplication(
       id,
+      user_id,
       req.body
     );
     if (!updatedApplication) {
@@ -76,7 +76,8 @@ export const updateApplicationById = async (req: Request, res: Response) => {
 export const deleteApplicationById = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
-    const deletedApplication = await applicationService.deleteApplication(id);
+    const user_id = req.user!.id;
+    const deletedApplication = await applicationService.deleteApplication(id, user_id);
     if (!deletedApplication) {
       return res.status(404).json({ message: "Application not found" });
     }

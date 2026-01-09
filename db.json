@@ -20,7 +20,32 @@
     }
   ],
   "projects": [],
-  "applications": [],
+  "applications": [
+    {
+      "id": 1,
+      "companyName": "ABC",
+      "jobTitle": "cash",
+      "status": "Applied",
+      "user_id": 2,
+      "appliedAt": "2026-01-09T13:00:11.244Z"
+    },
+    {
+      "id": 2,
+      "companyName": "ABC",
+      "jobTitle": "cash",
+      "status": "Applied",
+      "user_id": 2,
+      "appliedAt": "2026-01-09T13:00:38.192Z"
+    },
+    {
+      "id": 3,
+      "companyName": "ABC",
+      "jobTitle": "cash",
+      "status": "Offer",
+      "user_id": 2,
+      "appliedAt": "2026-01-09T13:16:55.682Z"
+    }
+  ],
   "submissions": [],
   "comments": [],
   "reviews": [],
