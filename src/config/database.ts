@@ -95,6 +95,58 @@ export const query = async (
     };
   }
 
+  // ---------------------------------------------
+  // UPDATE users
+  // ---------------------------------------------
+  const isUpdateUser = sql.match(/UPDATE users SET username = \$1, display_picture = \$2 WHERE id = \$3/i);
+  if (isUpdateUser && params) {
+    const [username, display_picture, id] = params;
+    const index = dbData.users.findIndex((u: any) => u.id === id);
+    if (index !== -1) {
+      dbData.users[index].username = username;
+      dbData.users[index].display_picture = display_picture;
+      fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2));
+      const { password, ...userResponse } = dbData.users[index];
+      return {
+        rows: [userResponse],
+        rowCount: 1,
+      };
+    }
+    return {
+      rows: [],
+      rowCount: 0,
+    };
+  }
+
+  // ---------------------------------------------
+  // DELETE users
+  // ---------------------------------------------
+  const isDeleteUser = sql.match(/DELETE FROM users WHERE id = \$1/i);
+  if (isDeleteUser && params) {
+    const [id] = params;
+    let deletedUser: any = null;
+    const initialLength = dbData.users.length;
+    dbData.users = dbData.users.filter((u: any) => {
+      if (u.id === id) {
+        deletedUser = u;
+        return false; // remove
+      }
+      return true; // keep
+    });
+    if (dbData.users.length < initialLength) {
+      fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2));
+      const { password, ...userResponse } = deletedUser || {};
+      return {
+        rows: [userResponse],
+        rowCount: 1,
+      };
+    }
+    return {
+      rows: [],
+      rowCount: 0,
+    };
+  }
+
   const isInsertApplication = sql.match(/INSERT INTO applications/i);
   if (isInsertApplication && params) {
     const [companyName, jobTitle, status, user_id] = params;

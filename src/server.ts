@@ -2,6 +2,8 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import { createServer } from "http";
 import { testDBConnection } from "./config/database";
+import fs from "fs";
+import path from "path";
 
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
@@ -12,6 +14,7 @@ import applicationRoutes from "./routes/applicationRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
+const DB_JSON_PATH = path.join(__dirname, "../db.json");
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
@@ -28,7 +31,12 @@ const startServer = async () => {
   app.use("/api/applications", applicationRoutes);
 
   app.get("/", (req: Request, res: Response) => {
-    res.json({ message: "Welcome to the Job Tracker API. Use the /api routes to access the data" });
+    try {
+      const data = JSON.parse(fs.readFileSync(DB_JSON_PATH, "utf-8"));
+      res.json(data);
+    } catch (err) {
+      res.status(500).json({ message: "Unable to read database file" });
+    }
   });
 
   // 404 handler

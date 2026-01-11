@@ -17,6 +17,15 @@
       "role": "user",
       "display_picture": null,
       "created_at": "2026-01-09T12:15:05.364Z"
+    },
+    {
+      "id": 3,
+      "username": "alice",
+      "email": "alice@example.com",
+      "password": "$2b$10$VcJz.6gbXH3subWBFg0Pg.9ZsBtB6ManmQ9FzDhZbcH4usMsxLIra",
+      "role": "user",
+      "display_picture": null,
+      "created_at": "2026-01-11T02:34:53.410Z"
     }
   ],
   "projects": [],
@@ -52,6 +61,14 @@
       "status": "Offer",
       "user_id": 2,
       "appliedAt": "2026-01-09T13:36:44.778Z"
+    },
+    {
+      "id": 5,
+      "companyName": "Amazon",
+      "jobTitle": "Developer",
+      "status": "Applied",
+      "user_id": 3,
+      "appliedAt": "2026-01-11T02:26:56.936Z"
     }
   ],
   "submissions": [],
